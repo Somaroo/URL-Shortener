@@ -5,13 +5,16 @@ import org.apache.commons.validator.routines.UrlValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Logger;
 
 @Service
 public class URLService {
 
-    Logger logger = Logger.getLogger( URLService.class.getName());
+    Logger logger = Logger.getLogger(URLService.class.getName());
 
     @Autowired
     StringRedisTemplate stringRedisTemplate;
@@ -32,9 +35,9 @@ public class URLService {
         String urlHash;
         if (urlIsValid(url)) {
 
-        urlHash = Hashing.murmur3_32_fixed().hashString(url, StandardCharsets.UTF_8).toString();
+            urlHash = Hashing.murmur3_32_fixed().hashString(url, StandardCharsets.UTF_8).toString();
 
-        return urlHash;
+            return urlHash;
         }
         throw new RuntimeException("URL is invalid ! ---> " + urlIsValid(url) + url);
     }
@@ -47,14 +50,26 @@ public class URLService {
         return urlShort;
     }
 
-    public String urlRetrieve(String urlShort){
+    public String urlRetrieve(String urlShort) {
 
         String url;
         url = stringRedisTemplate.opsForValue().get(urlShort);
 
-        if (url == null){
-            throw new RuntimeException("No URL for: " + urlShort );
+        if (url == null) {
+            throw new RuntimeException("No URL for: " + urlShort);
         }
         return url;
     }
+
+    public void urlDelete(String url) {
+
+        String urlShort = urlHashing(url);
+
+        if (!stringRedisTemplate.hasKey(urlShort)) {
+            throw new RuntimeException(url + " is NOT exist !");
+        }
+        stringRedisTemplate.delete(urlShort);
+    }
+
+
 }
