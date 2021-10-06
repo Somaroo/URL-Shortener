@@ -9,31 +9,30 @@ import org.springframework.web.bind.annotation.*;
 // http://localhost:8080/urlshort
 @RestController
 @RequestMapping("/urlshort")
-public class URLController {
+public class URLControllerRedis {
 
     @Autowired
     StringRedisTemplate stringRedisTemplate;
 
     @Autowired
-    private URLService urlService;
+    private URLServiceRedis urlServiceRedis;
 
     // Post Http Method
     @PostMapping
     public String urlGetShort(@RequestBody String url) {
 
         String urlShort;
-        urlShort = urlService.urlShort(url);
+        urlShort = urlServiceRedis.urlShort(url);
 
         return urlShort;
     }
 
     // get Http Method
-    @GetMapping(value = "/{urlShort}")
-    @ResponseBody
-    public String getUrl(@PathVariable String urlShort){
+    @GetMapping()
+    public String getUrl(@RequestBody String urlShort){
 
         String url;
-        url = urlService.urlRetrieve(urlShort);
+        url = urlServiceRedis.urlRetrieve(urlShort);
         return url;
     }
 
@@ -41,7 +40,7 @@ public class URLController {
     @DeleteMapping()
     public void deleteUrl(@RequestBody String url){
 
-        urlService.urlDelete(url);
+        urlServiceRedis.urlDelete(url);
 
     }
 }

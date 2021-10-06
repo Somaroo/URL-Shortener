@@ -12,9 +12,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.logging.Logger;
 
 @Service
-public class URLService {
+public class URLServiceRedis {
 
-    Logger logger = Logger.getLogger(URLService.class.getName());
+    Logger logger = Logger.getLogger(URLServiceRedis.class.getName());
 
     @Autowired
     StringRedisTemplate stringRedisTemplate;
