@@ -27,7 +27,7 @@ public class URLControllerRedis {
         return urlShort;
     }
 
-    // get Http Method
+    // Get Http Method
     @GetMapping()
     public String getUrl(@RequestBody String urlShort){
 
